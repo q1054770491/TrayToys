@@ -2,6 +2,8 @@
 # TrayToys 一键构建（Git Bash 版）
 # 产物：bin/TrayToys_v<版本号>.exe —— 程序名和版本号都自动从 src/AppInfo.cs 读取
 # 说明：每个版本生成独立 exe，不覆盖旧版本文件。
+#      构建**不会**改动「启动」文件夹的快捷方式；要开机自启请运行
+#      create-startup-shortcut.bat（或 set-startup-shortcut.ps1）。
 set -e
 # 禁用 MSYS 参数路径转换（否则 /nologo 之类会被当成路径）
 export MSYS_NO_PATHCONV=1
@@ -36,14 +38,3 @@ cd src
   ScreenKeeper.cs ScreenDimmer.cs DimForm.cs FullscreenWatcher.cs SessionResetKeeper.cs DeviceBatteryManager.cs BatteryProtocols.cs BatteryValueTracker.cs BatterySetupForm.cs DeviceSetupSimpleForm.cs ProtocolManageForm.cs AppInfo.cs AssemblyInfo.cs
 cd ..
 echo "OK -> bin/${OUT}  (版本 ${VER})"
-
-# 让"启动"文件夹里的快捷方式始终指向刚构建出来的这个版本。
-# 失败只提示、不影响构建结果（例如脚本执行策略被限制的机器）。
-if [ -f "set-startup-shortcut.ps1" ]; then
-  WINEXE=$(cygpath -w "$(pwd)/bin/${OUT}" 2>/dev/null || echo "$(pwd)/bin/${OUT}")
-  if powershell -NoProfile -ExecutionPolicy Bypass -File "set-startup-shortcut.ps1" -ExePath "$WINEXE" -Name "$NAME" 2>&1 | tail -2; then
-    echo "启动项已指向 ${OUT}"
-  else
-    echo "提示：启动项快捷方式更新失败（不影响构建；可手动运行 set-startup-shortcut.ps1）"
-  fi
-fi

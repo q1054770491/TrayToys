@@ -168,19 +168,28 @@ TrayToys_v2.8.exe --test-btdump         :: 原样打印每个带电量属性的�
 
 ## 开机自启
 
-已在**启动文件夹**创建了快捷方式，开机登录后会自动运行本工具：
+**构建不会自动改启动项**。想让它在开机时自动运行，单独跑一次脚本即可：
+
+```
+双击 create-startup-shortcut.bat
+```
+
+它会自动挑 `bin\` 里**版本号最高**的 exe，在启动文件夹建好快捷方式：
 
 ```
 %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\TrayToys.lnk
 ```
 
-- 快捷方式指向 `bin\TrayToys_vX.Y.exe`（当前版本）；
-- **每次运行 `build.bat` / `build.sh` 构建出新版本时，脚本会自动把该快捷方式更新到新版本**（由 `set-startup-shortcut.ps1` 完成），无需手动改；
-- 想手动指向别的路径或重建快捷方式：
+- 要指定某个 exe（比如放在别的盘）：
   ```
-  powershell -NoProfile -ExecutionPolicy Bypass -File set-startup-shortcut.ps1 -ExePath "D:\任意位置\TrayToys_vX.Y.exe"
+  create-startup-shortcut.bat "D:\Tools\TrayToys_v2.8.exe"
   ```
-- **不想开机自启**：直接删除那个 `TrayToys.lnk` 即可，程序本身不受影响。
+  或者直接调底层脚本：
+  ```
+  powershell -NoProfile -ExecutionPolicy Bypass -File set-startup-shortcut.ps1 -ExePath "D:\Tools\TrayToys_v2.8.exe"
+  ```
+- **为什么不再跟构建绑定**：以前每次构建都会把启动项改指到新 exe —— 你只是想编一个测试版，登录时跑的就悄悄换掉了。现在升级后想让它自启，再跑一次这个脚本就行。
+- **不想开机自启**：删掉那个 `TrayToys.lnk` 就行，程序本身不受影响。
 
 ## 配置与日志（都在 exe 同目录）
 
@@ -234,7 +243,7 @@ bash release.sh archive
 
 1. 把 `src\AppInfo.cs` 与 `src\AssemblyInfo.cs` 的版本号改为新版本；
 2. 调用 `build.sh` 构建 `bin\TrayToys_v<新版本>.exe`（**构建失败会自动回滚版本号**）；
-3. 把该版本的**完整快照**封存到 `archive\v<新版本>\`——含 `src\*.cs`、**该版本的 exe**、`csproj`/`sln`、`build.sh`/`build.bat`、`set-startup-shortcut.ps1`、`README.md`，以及记录版本号/归档时间/说明的 `RELEASE.txt`。
+3. 把该版本的**完整快照**封存到 `archive\v<新版本>\`——含 `src\*.cs`、**该版本的 exe**、`csproj`/`sln`、`build.sh`/`build.bat`、`set-startup-shortcut.ps1`/`create-startup-shortcut.bat`、`README.md`，以及记录版本号/归档时间/说明的 `RELEASE.txt`。
 
 > 归档目录是完整快照（源码 + exe）：既可以直接取用其中的 `TrayToys_vX.Y.exe`，也可以 `cd archive/vX.Y && bash build.sh` 从源码重新构建。
 > `archive\` 已在 `TrayToys.csproj` 里用 `<Compile Remove="archive\**" />` 排除，不会参与编译；
@@ -279,7 +288,8 @@ TrayToys/
 ├── build.bat                  # 一键构建（cmd 版，用系统自带 csc，无需装 VS/SDK）
 ├── build.sh                   # 一键构建（Git Bash 版）
 ├── release.sh                 # 发布脚本：升版本号 → 构建 → 归档该版本源码
-├── set-startup-shortcut.ps1   # 更新「启动」文件夹里的快捷方式（构建脚本会自动调用）
+├── set-startup-shortcut.ps1   # 建启动项快捷方式的底层脚本（可传 -ExePath 指定 exe）
+├── create-startup-shortcut.bat # 双击即可：自动挑 bin 里最新版本建启动项（与构建无关）
 ├── CHANGELOG.md               # 版本历史（V1.1 → 当前）
 ├── README.md
 ├── LICENSE                    # MIT

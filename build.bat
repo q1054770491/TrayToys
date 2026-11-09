@@ -1,30 +1,42 @@
 @echo off
 rem ============================================================
-rem  TrayToys 一键构建脚本（使用 Windows 内置 .NET Framework 编译器，无需装 VS/SDK）
-rem  产物: bin\TrayToys_v<版本号>.exe（程序名与版本号都自动读自 src\AppInfo.cs）
-rem  说明: 每个版本生成独立 exe，不覆盖旧版本文件。
+rem  TrayToys - one-click build
+rem  Uses the csc.exe that ships with Windows (.NET Framework),
+rem  so no Visual Studio / SDK / NuGet is required.
+rem
+rem  Output: bin\<Name>_v<Version>.exe
+rem          Name and Version are parsed from src\AppInfo.cs
+rem          (single source of truth; rename/version there only).
+rem
+rem  Note: each version gets its own exe; older files are kept.
+rem        The build does NOT touch the Startup shortcut -- run
+rem        create-startup-shortcut.bat when you want auto-start.
+rem
+rem  Kept ASCII-only on purpose: cmd.exe parses .bat files using
+rem  the system ANSI codepage, so UTF-8 Chinese comments can be
+rem  split mid-character and end up executed as commands.
 rem ============================================================
 setlocal enabledelayedexpansion
 set CSC=%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\csc.exe
 if not exist "%CSC%" set CSC=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe
 
-rem ---- 从 src\AppInfo.cs 解析版本号 ----
+rem ---- read version from src\AppInfo.cs ----
 set VER=
 for /f "tokens=6" %%a in ('findstr /c:"const string Version" src\AppInfo.cs') do set VER=%%a
 set VER=%VER:"=%
 set VER=%VER:;=%
 if "%VER%"=="" (
-  echo 错误: 未能从 src\AppInfo.cs 解析出版本号，请检查 AppInfo.cs 的 Version 字段。
+  echo ERROR: cannot parse Version from src\AppInfo.cs
   exit /b 1
 )
 
-rem ---- 从 src\AppInfo.cs 解析程序名 ----
+rem ---- read program name from src\AppInfo.cs ----
 set NAME=
 for /f "tokens=6" %%a in ('findstr /c:"const string Name" src\AppInfo.cs') do set NAME=%%a
 set NAME=%NAME:"=%
 set NAME=%NAME:;=%
 if "%NAME%"=="" (
-  echo 错误: 未能从 src\AppInfo.cs 解析出程序名。
+  echo ERROR: cannot parse Name from src\AppInfo.cs
   exit /b 1
 )
 
@@ -39,12 +51,9 @@ pushd src
 popd
 
 if exist bin\%NAME%_v%VER%.exe (
-  echo 构建成功: bin\%NAME%_v%VER%.exe  ^(版本 %VER%^)
-  rem ---- 让"启动"文件夹里的快捷方式始终指向刚构建出来的这个版本 ----
-  if exist "set-startup-shortcut.ps1" (
-    powershell -NoProfile -ExecutionPolicy Bypass -File "set-startup-shortcut.ps1" -ExePath "%~dp0bin\%NAME%_v%VER%.exe" -Name "%NAME%"
-  )
+  echo Build OK: bin\%NAME%_v%VER%.exe  ^(version %VER%^)
 ) else (
-  echo 构建失败，请检查上面的编译错误。
+  echo Build FAILED - see compiler errors above.
+  exit /b 1
 )
 endlocal

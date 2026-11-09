@@ -58,7 +58,7 @@ archive_version() {
   fi
   mkdir -p "$dst/src"
   cp src/*.cs "$dst/src/"
-  for f in "${NAME}.csproj" "${NAME}.sln" build.sh build.bat set-startup-shortcut.ps1 README.md; do
+  for f in "${NAME}.csproj" "${NAME}.sln" build.sh build.bat set-startup-shortcut.ps1 create-startup-shortcut.bat README.md; do
     [ -f "$f" ] && cp "$f" "$dst/"
   done
 
