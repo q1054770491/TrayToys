@@ -1,0 +1,40 @@
+# ============================================================
+#  TrayToys —— .gitattributes
+#  目的：让「换行符」在任何机器、任何 core.autocrlf 设置下都一致。
+#        没有这个文件时，clone 出来的 .sh 会不会变成 CRLF，
+#        取决于对方的 git 配置 —— 那是「我这能跑、他那报 \r 错误」的根源。
+# ============================================================
+
+# 默认：由 git 自动判断文本/二进制，并统一在仓库内存 LF
+* text=auto
+
+# ---------- 必须 LF ----------
+# 这两个要跨平台执行（Git Bash / WSL / Linux），CRLF 会导致
+# "bash: $'\r': command not found" 或 PowerShell 解析异常
+*.sh      text eol=lf
+*.ps1     text eol=lf
+
+# ---------- 必须 CRLF ----------
+# cmd.exe 批处理对 LF 结尾的兼容性差（goto/label 会出问题）
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+
+# ---------- 文本，跟随平台 ----------
+*.cs      text diff=csharp
+*.csproj  text
+*.sln     text eol=crlf
+*.md      text
+*.json    text
+*.yml     text
+*.yaml    text
+LICENSE   text
+
+# ---------- 二进制（禁止任何换行转换与 diff） ----------
+*.exe     binary
+*.dll     binary
+*.pdb     binary
+*.png     binary
+*.jpg     binary
+*.ico     binary
+*.zip     binary
+*.7z      binary
