@@ -1,0 +1,63 @@
+# ============================================================
+#  TrayToys —— .gitignore
+#  原则：只提交「源码 + 构建脚本 + 文档」。
+#        凡是运行时生成、含本机信息、或体积大而无用的，一律不进仓库。
+# ============================================================
+
+# ---------- 1. 个人配置（最重要：含本机信息）----------
+# TrayToys.json 里存的是**你这台机器**的东西，绝不该公开：
+#   · selectedDevices   —— 你的音频端点 GUID（能反推出你有哪些声卡/耳机）
+#   · hidProtocols      —— 你自建的 2.4G 协议表（厂商 VID/PID + 设备名）
+#   · batteryValueStamps—— 电量时间戳（能看出你什么时候用过电脑）
+#   · key / modifiers   —— 你的热键习惯
+TrayToys.json
+a_few_tool.json
+config.json
+
+# ---------- 2. 日志与崩溃记录 ----------
+# 日志里会记录你实际连接的设备名、电量读数、扫描时间
+*.log
+TrayToys_crash.log
+a_few_tool_crash.log
+
+# ---------- 3. 构建产物 ----------
+bin/
+obj/
+*.exe
+*.pdb
+*.dll
+*.mdb
+
+# ---------- 4. 本地版本快照 ----------
+# archive/ 是本地"每版封存一份源码 + 成品 exe"的历史，共 4MB+ 的旧 exe。
+# 对使用者没有价值（他们只需要最新版），且会让仓库体积翻好几倍。
+# 想公开历史版本请用 GitHub Releases，不要把旧 exe 塞进 git。
+archive/
+
+# ---------- 5. IDE / 编辑器 ----------
+.vs/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.sln.docstates
+
+# ---------- 6. 系统与临时文件 ----------
+Thumbs.db
+desktop.ini
+.DS_Store
+*.tmp
+*.bak
+*.swp
+*~
+
+# ---------- 7. 打包产物 ----------
+*.zip
+*.7z
+*.rar
+
+# ---------- 8. 本项目的调试截图与临时目录 ----------
+# （--test-uishots / --test-toastshot 生成的图片，以及本地备份）
+*_self.png
+ui_shots/
+backup/

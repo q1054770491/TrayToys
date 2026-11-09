@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>5.0</LangVersion>
+    <AssemblyName>TrayToys</AssemblyName>
+    <RootNamespace>TrayToys</RootNamespace>
+    <PlatformTarget>x64</PlatformTarget>
+    <Nullable>disable</Nullable>
+    <!-- 版本号等信息由 src\AssemblyInfo.cs 提供（csc 命令行构建与 VS 构建共用同一份） -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- archive/ 存放历史版本的源码快照，不参与编译（SDK 风格默认会 glob **/*.cs） -->
+    <Compile Remove="archive\**" />
+  </ItemGroup>
+</Project>
