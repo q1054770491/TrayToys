@@ -3,7 +3,7 @@
 **一个 124 KB 的单文件托盘工具：按一次热键切换音频设备，顺便管住音量、电量和屏幕。**
 
 <p>
-  <img alt="version" src="https://img.shields.io/badge/version-2.8-blue">
+  <img alt="version" src="https://img.shields.io/badge/version-2.9-blue">
   <img alt="platform" src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-0078D4">
   <img alt="dotnet" src="https://img.shields.io/badge/.NET%20Framework-4.8-512BD4">
   <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
@@ -53,7 +53,7 @@ is required.
 
 ## 下载
 
-从 [Releases](https://github.com/q1054770491/TrayToys/releases) 下载 `TrayToys_v2.8.exe`，
+从 [Releases](https://github.com/q1054770491/TrayToys/releases) 下载 `TrayToys_v2.9.exe`，
 **单文件、免安装**，放到任意目录双击即可运行。配置与日志都写在 exe 同目录，
 不想要了直接删掉整个文件夹就是干净卸载。
 
@@ -83,6 +83,7 @@ is required.
 - **看视频不会被误变暗**：检测到全屏应用（视频/游戏/PPT 放映）时暂停变暗，退出全屏后自动恢复判定。
 - **应用音量**（`应用音量` 页）：列出所有出声 / 已暂停的应用，单独调音量与静音；**应用关闭后再打开会自动恢复 100%**。
 - **设备电量**（`设备电量` 页）：显示能向 Windows 上报电量的无线设备（蓝牙耳机 / 鼠标 / 键盘，以及协议表收录的 2.4G 设备），**每次启动自动扫描**，不写死设备；读不到的设备可点「添加设备」——选设备、填官方电量、自动识别即可（存 `TrayToys.json`，无需改代码）；需要手选接口时用对话框里的「高级自定义…」。
+- **开机自启**（`关于` 页）：一个勾选框搞定。判定标准是「快捷方式存在**且指向当前 exe**」——升级换版本后旧快捷方式不会让你登录时跑到旧版本上（会显示为未勾选，勾一下即改指过来）。
 - 启动驻留托盘、单实例运行；隐藏主窗口同样不进任务栏与 `Alt+Tab`。
 
 ## 应用音量（音量合成器）
@@ -157,13 +158,13 @@ is required.
 ### 相关诊断命令
 
 ```bat
-TrayToys_v2.8.exe --test-identify 41E4 100  :: 智能识别：按设备合并接口、自动遍历全部接口，输出所有候选与耗时
-TrayToys_v2.8.exe --test-simpledevice     :: 打开简化版「添加设备」并自绘截图（验证布局）
-TrayToys_v2.8.exe --test-probe          :: 列出所有可配置接口、自动探测 Feature ReportID、读一次 Input 报告
-TrayToys_v2.8.exe --test-autosearch 41E4 100  :: 自动搜索：在指定接口上找值等于 100 的字节（高级模式用）
-TrayToys_v2.8.exe --test-batterysetup   :: 打开「高级自定义」4 步向导并自绘截图（验证布局）
-TrayToys_v2.8.exe --test-saveconfig     :: 调用一次配置保存，检查 TrayToys.json 里 hidProtocols 的格式
-TrayToys_v2.8.exe --test-btdump         :: 原样打印每个带电量属性的设备节点（InstanceId / 容器在线与否 / DevNodeStatus / 蓝牙连接状态），排查"该显示却没显示 / 该消失却没消失"
+TrayToys_v2.9.exe --test-identify 41E4 100  :: 智能识别：按设备合并接口、自动遍历全部接口，输出所有候选与耗时
+TrayToys_v2.9.exe --test-simpledevice     :: 打开简化版「添加设备」并自绘截图（验证布局）
+TrayToys_v2.9.exe --test-probe          :: 列出所有可配置接口、自动探测 Feature ReportID、读一次 Input 报告
+TrayToys_v2.9.exe --test-autosearch 41E4 100  :: 自动搜索：在指定接口上找值等于 100 的字节（高级模式用）
+TrayToys_v2.9.exe --test-batterysetup   :: 打开「高级自定义」4 步向导并自绘截图（验证布局）
+TrayToys_v2.9.exe --test-saveconfig     :: 调用一次配置保存，检查 TrayToys.json 里 hidProtocols 的格式
+TrayToys_v2.9.exe --test-btdump         :: 原样打印每个带电量属性的设备节点（InstanceId / 容器在线与否 / DevNodeStatus / 蓝牙连接状态），排查"该显示却没显示 / 该消失却没消失"
 ```
 
 ## 开机自启
@@ -181,11 +182,11 @@ TrayToys_v2.8.exe --test-btdump         :: 原样打印每个带电量属性的�
 
 - 要指定某个 exe（比如放在别的盘）：
   ```
-  create-startup-shortcut.bat "D:\Tools\TrayToys_v2.8.exe"
+  create-startup-shortcut.bat "D:\Tools\TrayToys_v2.9.exe"
   ```
   或者直接调底层脚本：
   ```
-  powershell -NoProfile -ExecutionPolicy Bypass -File set-startup-shortcut.ps1 -ExePath "D:\Tools\TrayToys_v2.8.exe"
+  powershell -NoProfile -ExecutionPolicy Bypass -File set-startup-shortcut.ps1 -ExePath "D:\Tools\TrayToys_v2.9.exe"
   ```
 - **为什么不再跟构建绑定**：以前每次构建都会把启动项改指到新 exe —— 你只是想编一个测试版，登录时跑的就悄悄换掉了。现在升级后想让它自启，再跑一次这个脚本就行。
 - **不想开机自启**：删掉那个 `TrayToys.lnk` 就行，程序本身不受影响。
@@ -281,7 +282,7 @@ TrayToys/
 │   ├── Logger.cs              # 文件日志 TrayToys.log / TrayToys_crash.log（默认关闭）
 │   ├── AutoStart.cs           # 开机自启：读写「启动」文件夹里的 .lnk（WScript.Shell 后期绑定，无 COM 引用）
 │   ├── AppInfo.cs             # 版本号 / 程序名（改这里即可发新版本）
-│   └── AssemblyInfo.cs        # 程序集版本信息（V2.8.0.0）
+│   └── AssemblyInfo.cs        # 程序集版本信息（V2.9.0.0）
 ├── docs/images/               # README 里用到的截图
 ├── TrayToys.sln               # Visual Studio 解决方案（双击即可用 VS 打开）
 ├── TrayToys.csproj            # 项目文件（.NET Framework 4.8 / WinForms）
@@ -308,13 +309,13 @@ TrayToys/
 - `Win` 作修饰符可能撞系统快捷键，建议优先 `Ctrl / Alt / Shift` 组合。
 - 快捷键注册失败（被占用）会弹警告（并写入日志，若日志已开启），换个组合即可。
 - 诊断命令：
-  - `TrayToys_v2.8.exe --selftest`：验证浮窗可正常创建（退出码 0 = 通过）。
-  - `TrayToys_v2.8.exe --test-list`：枚举并记录播放/输入设备（写入 TrayToys.log）。
-  - `TrayToys_v2.8.exe --test-sessions`：枚举所有应用音频会话（音量合成器那套）。
-  - `TrayToys_v2.8.exe --test-settings [页签序号]`：直接打开设置窗口用于界面检查。
-  - `TrayToys_v2.8.exe --test-crash`：在后台线程故意抛一个未捕获异常，验证崩溃记录 `TrayToys_crash.log` 能正确落盘（进程会随之退出，属预期）。
-  - `TrayToys_v2.8.exe --test-perf`：性能自检，打印 `GetSessions` / 全屏检测 / 设备总音量读取的单次耗时，并折算成常驻 CPU 开销（改动高频路径后用它做回归）。
-  - `TrayToys_v2.8.exe --test-toastshot <png>`：把切换提示浮窗渲染成图片（README 里那张浮窗图就是这么来的，不切换任何设备）。
+  - `TrayToys_v2.9.exe --selftest`：验证浮窗可正常创建（退出码 0 = 通过）。
+  - `TrayToys_v2.9.exe --test-list`：枚举并记录播放/输入设备（写入 TrayToys.log）。
+  - `TrayToys_v2.9.exe --test-sessions`：枚举所有应用音频会话（音量合成器那套）。
+  - `TrayToys_v2.9.exe --test-settings [页签序号]`：直接打开设置窗口用于界面检查。
+  - `TrayToys_v2.9.exe --test-crash`：在后台线程故意抛一个未捕获异常，验证崩溃记录 `TrayToys_crash.log` 能正确落盘（进程会随之退出，属预期）。
+  - `TrayToys_v2.9.exe --test-perf`：性能自检，打印 `GetSessions` / 全屏检测 / 设备总音量读取的单次耗时，并折算成常驻 CPU 开销（改动高频路径后用它做回归）。
+  - `TrayToys_v2.9.exe --test-toastshot <png>`：把切换提示浮窗渲染成图片（README 里那张浮窗图就是这么来的，不切换任何设备）。
 - 屏幕变暗相关：
   - 变暗与恢复都是**渐变**的，时长由「渐变时长」控制（单位秒，默认 0.4 秒，设 0 则不做渐变）。
   - 暗屏期间**鼠标指针会一起隐藏**（系统指针画在所有窗口之上，不受透明度影响，遮不住），**一有输入立即恢复显示**。
@@ -327,7 +328,7 @@ TrayToys/
 
 ## 更新日志
 
-完整版本历史（V1.1 → V2.8，含每个版本的改动、取舍与踩过的坑）见 **[CHANGELOG.md](CHANGELOG.md)**。
+完整版本历史（V1.1 → V2.9，含每个版本的改动、取舍与踩过的坑）见 **[CHANGELOG.md](CHANGELOG.md)**。
 
 ## 许可证
 
