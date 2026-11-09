@@ -155,6 +155,24 @@ namespace TrayToys
             }
 
 
+            // 提示浮窗快照：--test-toastshot <输出png>
+            // 把浮窗画成图片（README / 文档用）。只截图，不切换任何设备。
+            if (args.Length > 1 && args[0] == "--test-toastshot")
+            {
+                using (ToastForm t = new ToastForm("已切换到：扬声器 (Realtek High Definition Audio)", 60000))
+                {
+                    t.Show();
+                    Application.DoEvents();
+                    using (System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(t.Width, t.Height))
+                    {
+                        t.DrawToBitmap(bmp, new System.Drawing.Rectangle(0, 0, t.Width, t.Height));
+                        bmp.Save(args[1], System.Drawing.Imaging.ImageFormat.Png);
+                    }
+                    Logger.Info("浮窗快照已写入 " + args[1]);
+                }
+                return;
+            }
+
             // 设备列表模式：仅枚举播放/输入设备并写日志（不切换，用于排查设备名读取问题）
             if (args.Length > 0 && args[0] == "--test-list")
             {
