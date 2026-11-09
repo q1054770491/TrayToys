@@ -37,6 +37,9 @@ archive/
 # ---------- 5. IDE / 编辑器 ----------
 .vs/
 .idea/
+# VS Code 的本机设置（可能含绝对路径、本机编译器路径），不进仓库。
+# 如果以后想共享调试配置，可单独放行：!.vscode/launch.json
+.vscode/
 *.user
 *.suo
 *.userprefs
