@@ -168,13 +168,12 @@ TrayToys_v2.8.exe --test-btdump         :: 原样打印每个带电量属性的�
 
 ## 开机自启
 
-**构建不会自动改启动项**。想让它在开机时自动运行，单独跑一次脚本即可：
+**构建不会自动改启动项**。想让它在开机时自动运行，两种方式都行：
 
-```
-双击 create-startup-shortcut.bat
-```
+1. **设置窗口 → 「关于」页右下角的「开机启动」勾选框** —— 勾上就建好，取消就删掉；
+2. **双击 `create-startup-shortcut.bat`** —— 适合命令行/批处理场景，自动挑 `bin\` 里**版本号最高**的 exe。
 
-它会自动挑 `bin\` 里**版本号最高**的 exe，在启动文件夹建好快捷方式：
+两者写的是同一个快捷方式，都在：
 
 ```
 %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\TrayToys.lnk
@@ -280,6 +279,7 @@ TrayToys/
 │   ├── HotkeyKeys.cs          # 虚拟键码与显示名映射
 │   ├── TrayIconHelper.cs      # 运行时绘制托盘图标
 │   ├── Logger.cs              # 文件日志 TrayToys.log / TrayToys_crash.log（默认关闭）
+│   ├── AutoStart.cs           # 开机自启：读写「启动」文件夹里的 .lnk（WScript.Shell 后期绑定，无 COM 引用）
 │   ├── AppInfo.cs             # 版本号 / 程序名（改这里即可发新版本）
 │   └── AssemblyInfo.cs        # 程序集版本信息（V2.8.0.0）
 ├── docs/images/               # README 里用到的截图

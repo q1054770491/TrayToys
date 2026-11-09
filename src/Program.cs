@@ -139,6 +139,22 @@ namespace TrayToys
                 }
             }
 
+            // 开机自启诊断：--test-autostart [status|on|off]
+            // 直接调用设置界面里那个勾选框背后的同一套逻辑，用来看"写盘到底有没有生效"。
+            if (args.Length > 0 && args[0] == "--test-autostart")
+            {
+                Logger.Enabled = true;
+                string mode = args.Length > 1 ? args[1] : "status";
+                if (mode == "on") AutoStart.Enable();
+                else if (mode == "off") AutoStart.Disable();
+                Logger.Info("autostart: mode=" + mode
+                    + " enabled=" + AutoStart.IsEnabled
+                    + " exe=" + Application.ExecutablePath
+                    + " target=" + AutoStart.DebugTarget()
+                    + " lnk=" + AutoStart.ShortcutPath);
+                return;
+            }
+
             // 设置窗口测试模式：直接显示设置窗口（可带页签序号，用于验证 UI 渲染），不进入主程序
             if (args.Length > 0 && args[0] == "--test-settings")
             {

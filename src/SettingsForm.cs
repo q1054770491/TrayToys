@@ -24,6 +24,8 @@ namespace TrayToys
         private CheckedListBox clbDevices;
         private CheckBox cbLog;
         private Label lblLogInfo;
+        private CheckBox cbAutoStart;          // 「开机启动」，在「关于」页
+        private bool applyingAutoStart;        // true = 正在同步状态，不要写盘
 
         // —— 输入设备页 ——
         private CheckBox cbInCtrl, cbInAlt, cbInShift, cbInWin;
@@ -123,6 +125,9 @@ namespace TrayToys
 
                 // 「设备电量」页：切进来扫一次；之后只靠设备变动通知，不再定时轮询
                 if (tabs.SelectedTab == pageBattery) RescanBattery();
+
+                // 「关于」页：启动项可能被外部改过，切进来重新对一次勾选状态
+                if (tabs.SelectedTab == pageAbout) RefreshAutoStartState();
             };
             this.FormClosed += delegate
             {
@@ -971,10 +976,60 @@ namespace TrayToys
             lblLogInfo.AutoSize = true;
             lblLogInfo.ForeColor = Color.DimGray;
 
+            // ---- 开机启动（勾上 = 在「启动」文件夹里放一个指向当前 exe 的快捷方式）----
+            cbAutoStart = MakeCheckBox("开机启动", 306, y + 12);
+            cbAutoStart.Size = new Size(96, 24);
+            RefreshAutoStartState();
+            cbAutoStart.CheckedChanged += delegate { OnAutoStartChanged(); };
+
             page.Controls.Add(sepLog);
             page.Controls.Add(cbLog);
             page.Controls.Add(btnDeleteLog);
             page.Controls.Add(lblLogInfo);
+            page.Controls.Add(cbAutoStart);
+        }
+
+        /// <summary>
+        /// 把勾选状态同步成磁盘上的真实情况。
+        /// 启动项可能被用户手动删掉、或被 create-startup-shortcut.bat 改指到别的 exe，
+        /// 所以每次进「关于」页都重新读一遍，而不是只在构造时读一次。
+        /// </summary>
+        private void RefreshAutoStartState()
+        {
+            if (cbAutoStart == null) return;
+            bool on = AutoStart.IsEnabled;
+            if (cbAutoStart.Checked == on) return;
+            applyingAutoStart = true;          // 这次是"同步"，不是用户操作，别写盘
+            cbAutoStart.Checked = on;
+            applyingAutoStart = false;
+        }
+
+        private void OnAutoStartChanged()
+        {
+            if (applyingAutoStart) return;
+
+            bool want = cbAutoStart.Checked;
+            try
+            {
+                if (want) AutoStart.Enable();
+                else AutoStart.Disable();
+            }
+            catch (Exception ex)
+            {
+                // 失败（权限不足 / COM 不可用）→ 勾选拨回去，并说明原因
+                applyingAutoStart = true;
+                cbAutoStart.Checked = AutoStart.IsEnabled;
+                applyingAutoStart = false;
+                MessageBox.Show(this,
+                    (want ? "创建开机启动项失败：" : "删除开机启动项失败：") + ex.Message,
+                    AppInfo.Name, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 写盘后再读一次：如果快捷方式没能指到当前 exe，勾选要如实回退
+            applyingAutoStart = true;
+            cbAutoStart.Checked = AutoStart.IsEnabled;
+            applyingAutoStart = false;
         }
 
         private static string DimStateText()

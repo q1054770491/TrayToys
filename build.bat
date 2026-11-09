@@ -46,7 +46,7 @@ pushd src
 "%CSC%" /nologo /target:winexe /optimize+ /out:..\bin\%NAME%_v%VER%.exe ^
   /r:System.Windows.Forms.dll /r:System.Drawing.dll /r:System.Core.dll /r:System.Runtime.Serialization.dll ^
   Program.cs MainForm.cs ToastForm.cs SettingsForm.cs SessionRow.cs AudioManager.cs AudioSessionManager.cs ^
-  NativeMethods.cs Settings.cs HotkeyKeys.cs TrayIconHelper.cs Logger.cs ^
+  NativeMethods.cs Settings.cs HotkeyKeys.cs TrayIconHelper.cs Logger.cs AutoStart.cs ^
   ScreenKeeper.cs ScreenDimmer.cs DimForm.cs FullscreenWatcher.cs SessionResetKeeper.cs DeviceBatteryManager.cs BatteryProtocols.cs BatteryValueTracker.cs BatterySetupForm.cs DeviceSetupSimpleForm.cs ProtocolManageForm.cs AppInfo.cs AssemblyInfo.cs
 popd
 
